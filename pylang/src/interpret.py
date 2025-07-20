@@ -19,5 +19,7 @@ class Interpretter:
             return self.evaluate(node.expr, var) - 1
         elif isinstance(node, parse.Neg):
             return -self.evaluate(node.expr, var)
+        elif isinstance(node, parse.Add):
+            return self.evaluate(node.expr, var) + self.evaluate(node.atom, var)
         else:
             raise Exception(f"Unknown Nodes: {node}")

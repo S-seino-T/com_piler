@@ -38,6 +38,15 @@ class Neg:
         return f"(Neg {self.expr})"
 
 
+class Add:
+    def __init__(self, expr, atom):
+        self.expr = expr
+        self.atom = atom
+
+    def __repr__(self):
+        return f"(Add {self.expr} {self.atom})"
+
+
 class Parser:
     def __init__(self):
         self.bpos = 0
@@ -50,12 +59,31 @@ class Parser:
         return ret
 
     def expr(self, tokens):
+        return self.binary(tokens)
+
+    def binary(self, tokens):
+        # Addの解析: expr + factor の形式
+        p_counter = 0
+        for i in range(len(tokens)):
+            token_type, token_value = tokens[i]
+            if token_type == "LPAREN":
+                p_counter += 1
+            elif token_type == "RPAREN":
+                p_counter -= 1
+            elif token_type == "PLUS" and p_counter == 0:
+                left_expr = self.expr(tokens[:i])
+                right_factor = self.atom(tokens[i + 1 :])
+                return Add(left_expr, right_factor)
+        return self.unary(tokens)
+
+    def unary(self, tokens):
+        # 単項演算子の解析
         token_type, token_value = tokens[0]
         if token_type == "SUCC":
             return Succ(self.factor(tokens[1:]))
         elif token_type == "PRED":
             return Pred(self.factor(tokens[1:]))
-        elif token_type == "NEG":
+        elif token_type == "MINUS":
             return Neg(self.factor(tokens[1:]))
         else:
             return self.factor(tokens)
@@ -68,9 +96,14 @@ class Parser:
                 return self.expr(tokens[1:-1])
             else:
                 raise SyntaxError(f"Unexpected token: {tokens[0]}")
-        elif first_token_type == "VAR":
+        else:
+            return self.atom(tokens)
+
+    def atom(self, tokens):
+        token_type, token_value = tokens[0]
+        if token_type == "VAR":
             return Var()
-        elif first_token_type == "NUMBER":
-            return Int(first_token_value)
+        elif token_type == "NUMBER":
+            return Int(token_value)
         else:
             raise SyntaxError(f"Unexpected token: {tokens[0]}")
