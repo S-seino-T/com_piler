@@ -27,7 +27,7 @@ class Pred:
         self.expr = expr
 
     def __repr__(self):
-        return f"(Pred {self.pred})"
+        return f"(Pred {self.expr})"
 
 
 class Neg:
@@ -35,15 +35,7 @@ class Neg:
         self.expr = expr
 
     def __repr__(self):
-        return f"(Neg {self.pred})"
-
-
-class Paren:
-    def __init__(self, expr):
-        self.expr = expr
-
-    def __repr__(self):
-        return f"{self.expr}"
+        return f"(Neg {self.expr})"
 
 
 class Parser:
@@ -53,7 +45,9 @@ class Parser:
 
     def parse(self, tokens):
         self.epos = len(tokens) - 1
-        return self.expr(tokens)
+        ret = self.expr(tokens)
+        print(ret)
+        return ret
 
     def expr(self, tokens):
         token_type, token_value = tokens[0]
