@@ -2,13 +2,16 @@ import re
 
 TOKEN_IDENTIFIER = [
     ("NUMBER", r"\d+"),
-    ("VAR", r"x"),
+    ("LET", r"let"),
+    ("IN", r"in"),
+    ("DEFINE", r"\:\="),
     ("SUCC", r"succ"),
     ("PRED", r"pred"),
     ("MINUS", r"\-"),
     ("PLUS", r"\+"),
     ("LPAREN", r"\("),
     ("RPAREN", r"\)"),
+    ("VAR", r"[a-zA-Z_][a-zA-Z0-9_]*"),
     ("SPACE", r"\s+"),
 ]
 
